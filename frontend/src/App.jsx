@@ -36,19 +36,28 @@ import AGCloudPage from './pages/AGCloud/AGCloud';
 const App = () => {
   const navigate = useNavigate();
   const [authenticate, setAuthenticate] = useState(false);
-  const authentication = () => {
-    if (Cookies.get('token')) return setAuthenticate(true);
-    navigate('/login');
+
+  // Function to check authentication status
+  const checkAuthentication = () => {
+    if (Cookies.get('token')) {
+      return setAuthenticate(true);
+    } else {
+      navigate('/login');
+    }
   };
+
+  // Use useEffect to run the authentication check when 'authenticate' changes
   useEffect(() => {
-    authentication();
+    checkAuthentication();
   }, [authenticate]);
+
   return (
     <>
       <Routes>
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/signup" element={<SignUp />} />
 
+        {/* Render these routes only if authenticated */}
         {authenticate ? (
           <>
             <Route exact path="/" element={<MainPage />} />
@@ -56,9 +65,12 @@ const App = () => {
           </>
         ) : null}
       </Routes>
+
+      {/* ToastContainer for displaying notifications */}
       <ToastContainer position="bottom-center" autoClose={2000} />
     </>
   );
 };
 
 export default App;
+
